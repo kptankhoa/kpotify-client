@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import SpotifyPlayer from 'react-spotify-web-playback';
 import { bgColor, textColor } from 'Colors';
+import { ApiContext } from '../DashboardContainer';
 
-const Player = ({ accessToken, trackUri }) => {
+const Player = ({ playingUri }) => {
   const [play, setPlay] = useState(false);
-  useEffect(() => setPlay(true), [trackUri]);
+  const { accessToken } = useContext(ApiContext);
 
+  useEffect(() => setPlay(true), [playingUri]);
   if (!accessToken) return null;
   return <SpotifyPlayer
     token={accessToken}
@@ -14,7 +16,7 @@ const Player = ({ accessToken, trackUri }) => {
     }}
     showSaveIcon={true}
     play={play}
-    uris={trackUri ? [trackUri] : []}
+    uris={playingUri ? [playingUri] : []}
     styles={{
       activeColor: textColor,
       bgColor: bgColor,

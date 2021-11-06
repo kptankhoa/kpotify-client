@@ -1,65 +1,39 @@
-import React, { useEffect, useState } from 'react';
-import SpotifyWebApi from 'spotify-web-api-node';
-import useAuth from 'hooks/useAuth';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import SearchForm from 'pages/Dashboard/components/SearchForm';
-import TrackSearchItem from './components/TrackSearchItem';
-import Player from './components/Player';
+import TrackSearchItem from 'pages/Dashboard/components/TrackSearchItem';
+import Player from 'pages/Dashboard/components/Player';
+import { ApiContext } from 'pages/Dashboard/DashboardContainer';
+import { SpotifyContext } from 'pages/Dashboard/provider/SpotifyProvider';
+import { getCurrentPlayingTrack, resetSearch, searchTracks, setPlayingUri } from './reducer/DashboardAction';
 
-const spotifyApi = new SpotifyWebApi({
-  clientId: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
-});
+const Dashboard = () => {
 
-const Dashboard = ({ code }) => {
-  const accessToken = useAuth(code);
+  const { spotifyApi, accessToken } = useContext(ApiContext);
+  const { state: { playingUri, searchResults }, dispatch } = useContext(SpotifyContext);
 
   const [searchValue, setSearchValue] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  const [playingUri, setPlayingUri] = useState();
 
   useEffect(() => {
     if (!accessToken) return;
-    spotifyApi.setAccessToken(accessToken);
+    getCurrentPlayingTrack(spotifyApi, dispatch);
   }, [accessToken]);
   useEffect(() => {
+    if (!searchValue) return resetSearch(dispatch);
     if (!accessToken) return;
-    spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-      if (data.body) {
-        setPlayingUri(data.body.item.uri);
-      }
-    });
-  }, [accessToken]);
-  useEffect(() => {
-    if (!searchValue) return setSearchResults([]);
-    if (!accessToken) return;
-
-    let cancel = false;
-    spotifyApi
-      .searchTracks(searchValue)
-      .then((res) => {
-        if (cancel) return;
-        const searchedResult = res.body.tracks.items.map((track) => {
-          return {
-            artist: track.artists[0].name,
-            album: track.album.name,
-            name: track.name,
-            href: track.href,
-            uri: track.uri,
-          };
-        });
-        setSearchResults(searchedResult);
-      });
-    return () => cancel = true;
+    searchTracks(spotifyApi, dispatch, searchValue);
   }, [searchValue, accessToken]);
 
   return (
     <Container className="d-flex flex-column py-2 vh-100">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue}/>
-      <div className="flex-grow-1">
-        {searchResults.map(track => <TrackSearchItem key={track.uri} track={track} setPlayingUri={setPlayingUri}/>)}
+      <div className="flex-grow-1 overflow-auto">
+        {searchResults.map((track) =>
+          <TrackSearchItem key={track.uri} track={track} setPlayingUri={setPlayingUri(dispatch)}/>)
+        }
       </div>
       <div>
-        <Player accessToken={accessToken} trackUri={playingUri}/>
+        <Player playingUri={playingUri}/>
       </div>
     </Container>
   );
