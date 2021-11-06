@@ -24,12 +24,11 @@ const Dashboard = ({ code }) => {
   useEffect(() => {
     if (!accessToken) return;
     spotifyApi.getMyCurrentPlayingTrack().then((data) => {
-      console.log(data.body);
       if (data.body) {
         setPlayingUri(data.body.item.uri);
       }
     });
-  }, [accessToken, playingUri]);
+  }, [accessToken]);
   useEffect(() => {
     if (!searchValue) return setSearchResults([]);
     if (!accessToken) return;
