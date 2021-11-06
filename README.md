@@ -1,17 +1,18 @@
 # kpotify-client
 
-##Spotify clone by KP
+## Spotify clone by KP
 
 Using ReactJs for FE
 
 [Live demo](https://kpotify.vercel.app)
+[Auth BE](https://github.com/kptankhoa/kpotify-server)
 
-##Usage
-###Install dependencies
+## Usage
+### Install dependencies
 ``
 yarn
 ``
-###Run on localhost
+### Run on localhost
 ``
 yarn start
 ``
