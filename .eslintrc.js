@@ -52,5 +52,6 @@ module.exports = {
       'error',
       'always-multiline',
     ],
+    'max-len': ['error', { 'code': 100 }],
   },
 };

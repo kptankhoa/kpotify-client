@@ -1,36 +1,50 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import SearchForm from 'pages/Dashboard/components/SearchForm';
-import TrackSearchItem from 'pages/Dashboard/components/TrackSearchItem';
-import Player from 'pages/Dashboard/components/Player';
+import SearchForm from 'pages/Dashboard/components/SearchForm/SearchForm';
+import Player from 'pages/Dashboard/components/Player/Player';
 import { ApiContext } from 'pages/Dashboard/DashboardContainer';
 import { SpotifyContext } from 'pages/Dashboard/provider/SpotifyProvider';
-import { getCurrentPlayingTrack, resetSearch, searchTracks, setPlayingUri } from './reducer/DashboardAction';
+import getDashboardAction from './reducer/DashboardAction';
+import SearchResults from './components/SearchResults/SearchResults';
+import MyPlaylists from './components/MyPlaylists/MyPlaylists';
 
 const Dashboard = () => {
 
   const { spotifyApi, accessToken } = useContext(ApiContext);
-  const { state: { playingUri, searchResults }, dispatch } = useContext(SpotifyContext);
+  const { state: { playingUri, me }, dispatch } = useContext(SpotifyContext);
 
   const [searchValue, setSearchValue] = useState('');
 
+  const {
+    getCurrentPlayingTrack,
+    getMe,
+    getMyPlaylists,
+    resetSearch,
+    searchTracks,
+    setPlayingUri,
+  } = getDashboardAction(spotifyApi, dispatch, me);
+
   useEffect(() => {
     if (!accessToken) return;
-    getCurrentPlayingTrack(spotifyApi, dispatch);
+    getCurrentPlayingTrack();
+    getMe();
+    getMyPlaylists();
   }, [accessToken]);
   useEffect(() => {
-    if (!searchValue) return resetSearch(dispatch);
+    if (!searchValue) return resetSearch();
     if (!accessToken) return;
-    searchTracks(spotifyApi, dispatch, searchValue);
+    searchTracks(searchValue);
   }, [searchValue, accessToken]);
 
   return (
     <Container className="d-flex flex-column py-2 vh-100">
       <SearchForm searchValue={searchValue} setSearchValue={setSearchValue}/>
-      <div className="flex-grow-1 overflow-auto">
-        {searchResults.map((track) =>
-          <TrackSearchItem key={track.uri} track={track} setPlayingUri={setPlayingUri(dispatch)}/>)
-        }
+      <div className="flex-grow-1">
+        {searchValue ? (
+          <SearchResults setPlayingUri={setPlayingUri}/>
+        ) : (
+          <MyPlaylists setPlayingUri={setPlayingUri}/>
+        )}
       </div>
       <div>
         <Player playingUri={playingUri}/>

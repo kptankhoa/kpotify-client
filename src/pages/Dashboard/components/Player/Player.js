@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import SpotifyPlayer from 'react-spotify-web-playback';
-import { bgColor, textColor } from 'Colors';
-import { ApiContext } from '../DashboardContainer';
+import { bgColor, textColor } from 'common/Colors';
+import { ApiContext } from '../../DashboardContainer';
 
 const Player = ({ playingUri }) => {
   const [play, setPlay] = useState(false);

@@ -3,3 +3,12 @@
     box-shadow: none;
     outline: 0 none;
 }
+
+.text-button {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.text-button:hover {
+    text-decoration: underline;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form } from 'react-bootstrap';
-import { textColor } from 'Colors';
+import { textColor } from 'common/Colors';
 
 const SearchForm = ({ searchValue, setSearchValue }) => {
 
