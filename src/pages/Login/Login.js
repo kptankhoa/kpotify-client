@@ -1,11 +1,13 @@
 import React from 'react';
 import querystring from 'querystring';
 import { Container } from 'react-bootstrap';
+import generateRandomString from '../../utils/generateRandomString';
 
 const query = {
   client_id: process.env.REACT_APP_SPOTIFY_CLIENT_ID,
   response_type: 'code',
   redirect_uri: process.env.REACT_APP_REDIRECT_URI,
+  state: generateRandomString(16),
   // eslint-disable-next-line max-len
   scope: 'streaming user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state',
 };

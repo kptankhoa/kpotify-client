@@ -4,7 +4,7 @@
 
 Using ReactJs for FE
 
-[Live demo](https://kpotify.vercel.app)
+[Live demo](https://kpotify.vercel.app)\
 [Auth BE](https://github.com/kptankhoa/kpotify-server)
 
 ## Usage

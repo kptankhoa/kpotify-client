@@ -11,12 +11,15 @@ const MyPlaylists = ({ setPlayingUri }) => {
     <div
       style={{ color: textColor }}
     >
-      <h3 className='mx-1 p-2'>{me.display_name}&apos;s playlists</h3>
+      {me.display_name && (
+        <h3 className='mx-1 p-2'>{me.display_name}&apos;s playlists</h3>
+      )}
       {
         myPlaylists.map((playlist) => (
           <div
             key={playlist.id}
-            className='mx-1 p-2 border-bottom border-success overflow-auto'
+            className='mx-1 p-2 border-bottom border-success overflow-auto d-block text-button'
+            onClick={() => setPlayingUri(playlist.uri)}
           >
             <TextButton
               text={playlist.name}
